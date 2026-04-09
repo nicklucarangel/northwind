@@ -8,3 +8,4 @@ dbt/logs/
 *.csv.tmp
 .DS_Store
 .ipynb_checkpoints/
+dbt/profiles.yml
