@@ -89,7 +89,7 @@ models:
         tests:
           - not_null
           - unique
-      - name: region_name
+      - name: region_description
         tests:
           - not_null
 
@@ -99,7 +99,10 @@ models:
         tests:
           - not_null
           - unique
-      - name: region_name
+      - name: territory_description
+        tests:
+          - not_null
+      - name: region_id
         tests:
           - not_null
 

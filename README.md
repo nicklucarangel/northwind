@@ -49,16 +49,16 @@ flowchart LR
 
 ```text
 northwind-analytics/
-├── data/
-│   ├── input/extracted/       # raw Northwind CSV files
-│   └── normalized/            # normalized CSV files ready for ingestion
-├── dbt/                       # dbt project: staging, intermediate, marts, tests
-├── docs/                      # runbook and data dictionary
-├── notebooks/                 # exploratory and metric validation notebooks
-├── powerbi/                   # Power BI dashboard files
-├── scripts/                   # ingestion and validation scripts
-├── docker-compose.yml         # PostgreSQL service
-└── README.md
+|-- data/
+|   |-- input/extracted/       # raw Northwind CSV files
+|   `-- normalized/            # normalized CSV files ready for ingestion
+|-- dbt/                       # dbt project: staging, intermediate, marts, tests
+|-- docs/                      # runbook and data dictionary
+|-- notebooks/                 # exploratory and metric validation notebooks
+|-- powerbi/                   # Power BI dashboard files
+|-- scripts/                   # ingestion and validation scripts
+|-- docker-compose.yml         # PostgreSQL service
+`-- README.md
 ```
 
 ## Analytical Layers
@@ -129,7 +129,6 @@ Project documentation available in `docs/`:
 ## Operational Guide
 
 For the full execution flow, environment setup, ingestion steps, dbt execution, validation process, and dashboard refresh instructions, see `docs/runbook.md`.
-
 
 ## Main Deliverables
 

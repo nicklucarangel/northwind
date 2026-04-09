@@ -1,12 +1,31 @@
 import os
 from sqlalchemy import create_engine, text
+from sqlalchemy.engine import URL
 from dotenv import load_dotenv
 
 load_dotenv()
 
+def require_env(name: str) -> str:
+    value = os.getenv(name)
+    if not value:
+        raise RuntimeError(f"Variavel de ambiente obrigatoria nao definida: {name}")
+    return value
+
+DB_HOST = os.getenv("PGHOST", "localhost")
+DB_PORT = os.getenv("PGPORT", "5432")
+DB_NAME = require_env("PGDATABASE")
+DB_USER = require_env("PGUSER")
+DB_PASS = require_env("PGPASSWORD")
+
 engine = create_engine(
-    f"postgresql+psycopg2://{os.getenv('PGUSER')}:{os.getenv('PGPASSWORD')}"
-    f"@{os.getenv('PGHOST')}:{os.getenv('PGPORT')}/{os.getenv('PGDATABASE')}"
+    URL.create(
+        drivername="postgresql+psycopg2",
+        username=DB_USER,
+        password=DB_PASS,
+        host=DB_HOST,
+        port=int(DB_PORT),
+        database=DB_NAME,
+    )
 )
 
 tables = [

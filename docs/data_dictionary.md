@@ -158,7 +158,7 @@ All financial metrics are derived from transactional data and reflect values at 
 | reorder_level | Stock level at which reordering is triggered |
 | is_discontinued | Indicates whether the product is discontinued |
 
-### stg_erp__regions
+### stg_erp__region
 **Description:** Cleaned and standardized geographic region data  
 **Grain:** 1 row per region
 
@@ -318,11 +318,29 @@ Key metrics:
 **Description:** Sales aggregated by product  
 **Grain:** 1 row per product
 
+Key metrics:
+- total_orders
+- total_customers
+- total_quantity
+- gross_revenue
+- net_revenue
+- total_discount_amount
+- avg_line_revenue
+
 ---
 
 ### agg_sales_by_category
 **Description:** Sales aggregated by category  
 **Grain:** 1 row per category
+
+Key metrics:
+- total_orders
+- total_products_sold
+- total_quantity
+- gross_revenue
+- net_revenue
+- total_discount_amount
+- avg_line_revenue
 
 ---
 
@@ -342,19 +360,26 @@ Key metrics:
 **Description:** Customer churn classification based on inactivity  
 **Grain:** 1 row per customer
 
-Key fields:
+Key metrics:
+- total_orders
+- total_revenue
+- avg_order_value
+- total_quantity
+- avg_days_between_orders
 - days_since_last_order
 - churn_risk_status
 
 ---
 
 ### agg_shipping_performance.sql
-**Description:** Shipper metrics agreggated 
+**Description:** Shipping performance metrics aggregated by shipper  
 **Grain:** 1 row per shipper
 
-Key fields:
-- days_since_last_order
-- churn_risk_status
+Key metrics:
+- total_orders
+- avg_freight_amount
+- avg_days_to_ship
+- on_time_delivery_rate
 
 ---
 

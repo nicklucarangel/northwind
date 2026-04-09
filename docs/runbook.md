@@ -24,7 +24,10 @@ Configuration files already available in the project:
 
 - `.env`
 - `docker-compose.yml`
-- `dbt/profiles.yml`
+
+Note:
+
+- `dbt/profiles.yml` is not tracked in Git because it may contain environment variables and local credentials. Create or keep this file locally before running dbt commands.
 
 Expected variables in `.env`:
 

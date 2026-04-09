@@ -13,12 +13,11 @@ services:
       - ./data:/data
       - ./sql:/sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U northwind -d northwind"]
+      test: ["CMD-SHELL", "pg_isready -U ${PGUSER} -d ${PGDATABASE}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
 volumes:
   pgdata:
-
 
