@@ -1,32 +1,32 @@
 # Runbook
 
-## Objetivo
+## Purpose
 
-Este runbook descreve como executar o pipeline end-to-end do projeto `northwind-analytics`, desde a preparação do ambiente e carga dos CSVs no PostgreSQL até a transformação com dbt e atualização do dashboard no Power BI.
+This runbook describes how to execute the `northwind-analytics` project end-to-end, from environment setup and CSV loading into PostgreSQL to dbt transformations and Power BI dashboard refresh.
 
-Fluxo resumido:
+Summary flow:
 
-1. Subir o PostgreSQL com Docker Compose
-2. Normalizar os arquivos CSV
-3. Criar os schemas do banco
-4. Carregar os dados em `raw`
-5. Executar transformações e testes no dbt
-6. Atualizar o arquivo `powerbi/northwind.pbix`
+1. Start PostgreSQL with Docker Compose
+2. Normalize the CSV files
+3. Create the database schemas
+4. Load the data into `raw`
+5. Run dbt transformations and tests
+6. Refresh `powerbi/northwind.pbix`
 
-## Pré-requisitos
+## Prerequisites
 
-- Windows com PowerShell
-- Docker Desktop em execução
-- Python disponível no ambiente virtual local `.venv`
-- PostgreSQL exposto na porta `5432`
+- Windows with PowerShell
+- Docker Desktop running
+- Python available in the local `.venv` virtual environment
+- PostgreSQL exposed on port `5432`
 
-Arquivos de configuração já existentes no projeto:
+Configuration files already available in the project:
 
 - `.env`
 - `docker-compose.yml`
 - `dbt/profiles.yml`
 
-Variáveis esperadas no `.env`:
+Expected variables in `.env`:
 
 ```env
 PGHOST=localhost
@@ -36,146 +36,140 @@ PGUSER=*******
 PGPASSWORD=*******
 ```
 
-## Estrutura relevante
+## Relevant structure
 
-- `data/input/extracted/`: CSVs originais extraídos do pacote Northwind
-- `data/normalized/`: CSVs normalizados para ingestão
-- `scripts/normalize_csv.py`: higieniza quebras de linha e padroniza arquivos
-- `scripts/create_schemas.py`: cria os schemas `raw` e `analytics`
-- `scripts/ingest_csv_to_pg.py`: carrega os CSVs normalizados em `raw`
-- `scripts/check_loaded_data.py`: valida contagem das tabelas carregadas
-- `dbt/`: projeto dbt com camadas staging, intermediate e marts
-- `powerbi/northwind.pbix`: dashboard final
+- `data/input/extracted/`: original CSV files extracted from the Northwind package
+- `data/normalized/`: normalized CSV files ready for ingestion
+- `scripts/normalize_csv.py`: cleans line breaks and standardizes files
+- `scripts/create_schemas.py`: creates the `raw` and `analytics` schemas
+- `scripts/ingest_csv_to_pg.py`: loads normalized CSVs into `raw`
+- `scripts/check_loaded_data.py`: validates loaded table row counts
+- `dbt/`: dbt project with staging, intermediate, and marts layers
+- `powerbi/northwind.pbix`: final dashboard
 
-## Execução end-to-end
+## End-to-end execution
 
-### 1. Subir o banco
+### 1. Start the database
 
-Na raiz do projeto:
+From the project root:
 
 ```powershell
 docker compose up -d
 ```
 
-Para verificar se o container está saudável:
+To verify the container is healthy:
 
 ```powershell
 docker compose ps
 ```
 
-Container esperado: `northwind_pg`
+Expected container: `northwind_pg`
 
-### 2. Ativar o ambiente virtual
+### 2. Activate the virtual environment
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-Se preferir, os comandos abaixo também podem ser executados sem ativar o ambiente, chamando os binários diretamente em `.venv\Scripts`.
+If preferred, the commands below can also be executed without activating the environment by calling the binaries directly from `.venv\Scripts`.
 
-### 3. Normalizar os CSVs
+### 3. Normalize the CSV files
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\normalize_csv.py
 ```
 
-Resultado esperado:
+Expected result:
 
-- arquivos gerados em `data/normalized/`
-- logs com padrão `OK <arquivo> -> <arquivo>.csv | linhas=<n> cols=<n>`
+- files generated in `data/normalized/`
+- logs following the pattern `OK <file> -> <file>.csv | rows=<n> cols=<n>`
 
-### 4. Criar os schemas no PostgreSQL
+### 4. Create the PostgreSQL schemas
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\create_schemas.py
 ```
 
-Resultado esperado:
+Expected result:
 
 ```text
-Schemas criados com sucesso.
+Schemas created successfully.
 ```
 
-Schemas criados:
+Created schemas:
 
 - `raw`
 - `analytics`
 
-### 5. Ingerir os dados em `raw`
+### 5. Load the data into `raw`
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\ingest_csv_to_pg.py
 ```
 
-Comportamento esperado:
+Expected behavior:
 
-- cada CSV de `data/normalized/` é carregado com `if_exists='replace'`
-- as tabelas são recriadas no schema `raw`
+- each CSV in `data/normalized/` is loaded with `if_exists='replace'`
+- tables are recreated in the `raw` schema
 
-### 6. Validar a carga
+### 6. Validate the load
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\check_loaded_data.py
 ```
 
-Contagens observadas no ambiente deste projeto:
+Row counts observed in this project environment:
 
 ```text
-raw.categories: 8 linhas
-raw.customer_customer_demo: 0 linhas
-raw.customer_demographics: 0 linhas
-raw.customers: 91 linhas
-raw.employee_territories: 49 linhas
-raw.employees: 9 linhas
-raw.order_details: 2155 linhas
-raw.orders: 830 linhas
-raw.products: 77 linhas
-raw.region: 4 linhas
-raw.shippers: 6 linhas
-raw.suppliers: 29 linhas
-raw.territories: 53 linhas
-raw.us_states: 51 linhas
+raw.categories: 8 rows
+raw.customer_customer_demo: 0 rows
+raw.customer_demographics: 0 rows
+raw.customers: 91 rows
+raw.employee_territories: 49 rows
+raw.employees: 9 rows
+raw.order_details: 2155 rows
+raw.orders: 830 rows
+raw.products: 77 rows
+raw.region: 4 rows
+raw.shippers: 6 rows
+raw.suppliers: 29 rows
+raw.territories: 53 rows
+raw.us_states: 51 rows
 ```
 
-Observação:
+Note:
 
-- `customer_customer_demo` e `customer_demographics` estão vazias na carga atual; isso não indica falha por si só.
+- `customer_customer_demo` and `customer_demographics` are empty in the current load; this does not indicate a failure by itself.
 
-### 7. Executar transformações dbt
+### 7. Run dbt transformations
 
-Na pasta `dbt/`:
+Inside the `dbt/` folder:
 
 ```powershell
 cd dbt
 ..\.venv\Scripts\dbt.exe run
 ```
 
-Se o PowerShell interpretar mal o caminho por causa do espaço acidental, use exatamente:
-
-```powershell
-..\.venv\Scripts\dbt.exe run
-```
-
-Ou, de forma mais segura, a partir da raiz:
+Alternatively, from the project root:
 
 ```powershell
 Set-Location dbt
 ..\.venv\Scripts\dbt.exe run
 ```
 
-Binário validado no projeto:
+Validated project binary:
 
 ```powershell
 ..\.venv\Scripts\dbt.exe
 ```
 
-Modelos identificados no projeto:
+Models identified in the project:
 
-- 25 modelos
-- 82 testes
+- 25 models
+- 82 tests
 - 14 sources
 
-Principais saídas analíticas:
+Main analytical outputs:
 
 - `analytics.fct_orders`
 - `analytics.fct_order_lines`
@@ -190,36 +184,36 @@ Principais saídas analíticas:
 - `analytics.agg_customer_churn_risk`
 - `analytics.agg_shipping_performance`
 
-### 8. Executar testes dbt
+### 8. Run dbt tests
 
-Ainda na pasta `dbt/`:
+Still inside the `dbt/` folder:
 
 ```powershell
 ..\.venv\Scripts\dbt.exe test --select dim_customers dim_products dim_employees dim_shippers fct_order_lines fct_orders
 ```
 
-Resultado validado no ambiente:
+Validated result in this environment:
 
-- testes de `not_null` e `unique` executaram com sucesso para as principais dimensões e fatos
+- `not_null` and `unique` tests passed for the main dimensions and fact tables
 
-### 9. Atualizar o Power BI
+### 9. Refresh Power BI
 
-Abrir:
+Open:
 
 - `powerbi/northwind.pbix`
 
-No Power BI Desktop:
+In Power BI Desktop:
 
-1. Atualizar as fontes conectadas ao PostgreSQL `northwind`
-2. Recarregar os datasets a partir do schema `analytics`
-3. Validar se as tabelas analíticas principais estão disponíveis
-4. Salvar a versão final do dashboard
+1. Refresh the PostgreSQL data sources connected to `northwind`
+2. Reload datasets from the `analytics` schema
+3. Validate that the main analytical tables are available
+4. Save the final version of the dashboard
 
-Se necessário, exportar o material final para PDF a partir do Power BI.
+If needed, export the final material to PDF from Power BI.
 
-## Consultas rápidas de validação
+## Quick validation queries
 
-Após rodar a transformação, validar algumas tabelas no PostgreSQL:
+After running the transformation layer, validate a few PostgreSQL tables:
 
 ```sql
 select count(*) from analytics.fct_orders;
@@ -228,7 +222,7 @@ select count(*) from analytics.dim_customers;
 select count(*) from analytics.agg_sales_monthly;
 ```
 
-Verificar amostra de pedidos:
+Check a sample of orders:
 
 ```sql
 select *
@@ -237,7 +231,7 @@ order by order_date desc
 limit 10;
 ```
 
-Verificar churn:
+Check churn distribution:
 
 ```sql
 select churn_risk_status, count(*)
@@ -246,68 +240,13 @@ group by 1
 order by 1;
 ```
 
-## Troubleshooting
+## Done criteria
 
-### Docker sem permissão ou daemon indisponível
+The pipeline can be considered complete when:
 
-Sintoma:
-
-- erro ao executar `docker compose ps` ou `docker compose up -d`
-
-Ação:
-
-- confirmar que o Docker Desktop está aberto
-- confirmar que o engine Linux está rodando
-- reexecutar os comandos no PowerShell com acesso ao Docker
-
-### `dbt` não reconhecido
-
-Sintoma:
-
-- `dbt` não encontrado no PATH
-
-Ação:
-
-- usar o executável local do projeto:
-
-```powershell
-C:\Users\nicolas.rangel_pier\Desktop\Nico\northwind-analytics\.venv\Scripts\dbt.exe
-```
-
-### `python` não reconhecido
-
-Sintoma:
-
-- alias do Windows aponta para a Microsoft Store
-
-Ação:
-
-- usar o Python local do ambiente virtual:
-
-```powershell
-C:\Users\nicolas.rangel_pier\Desktop\Nico\northwind-analytics\.venv\Scripts\python.exe
-```
-
-### `dbt build` falha com `[WinError 5] Acesso negado`
-
-Observação do ambiente atual:
-
-- `dbt ls` funcionou
-- `dbt test` funcionou
-- `dbt build` falhou com `[WinError 5] Acesso negado` ao criar recursos internos de multiprocessing no Windows
-
-Ação recomendada:
-
-- executar `dbt run` e `dbt test` separadamente
-- manter o registro do erro caso seja necessário ajustar permissões do ambiente
-
-## Critério de pronto
-
-O pipeline pode ser considerado concluído quando:
-
-- o container PostgreSQL está em execução
-- os arquivos normalizados existem em `data/normalized/`
-- as tabelas do schema `raw` foram carregadas
-- os modelos do schema `analytics` foram materializados
-- os testes dbt principais passaram
-- o arquivo `powerbi/northwind.pbix` foi atualizado com dados do schema analítico
+- the PostgreSQL container is running
+- normalized files exist in `data/normalized/`
+- tables in the `raw` schema have been loaded
+- models in the `analytics` schema have been materialized
+- the main dbt tests have passed
+- `powerbi/northwind.pbix` has been refreshed with data from the analytical schema
