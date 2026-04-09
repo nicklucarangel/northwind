@@ -3,7 +3,7 @@ northwind-analytics/
 ├─ .gitignore
 ├─ .env.example
 
-├─ data/                          # (geralmente não versionar tudo)
+├─ data/                          # 
 │  ├─ input/                      # zip original + extração "como veio"
 │  │  ├─ northwind.zip
 │  │  └─ extracted/               # CSVs originais extraídos
