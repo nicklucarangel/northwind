@@ -119,88 +119,17 @@ Aggregated models:
 - `agg_customer_churn_risk`
 - `agg_shipping_performance`
 
-## How to Run
-
-### 1. Start PostgreSQL
-
-From the project root:
-
-```powershell
-docker compose up -d
-```
-
-### 2. Activate the virtual environment
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-### 3. Normalize the source files
-
-```powershell
-.\.venv\Scripts\python.exe scripts\normalize_csv.py
-```
-
-### 4. Create the database schemas
-
-```powershell
-.\.venv\Scripts\python.exe scripts\create_schemas.py
-```
-
-### 5. Load data into the `raw` schema
-
-```powershell
-.\.venv\Scripts\python.exe scripts\ingest_csv_to_pg.py
-```
-
-### 6. Validate the load
-
-```powershell
-.\.venv\Scripts\python.exe scripts\check_loaded_data.py
-```
-
-### 7. Run dbt models
-
-```powershell
-Set-Location dbt
-..\.venv\Scripts\dbt.exe run
-```
-
-### 8. Run dbt tests
-
-```powershell
-..\.venv\Scripts\dbt.exe test --select dim_customers dim_products dim_employees dim_shippers fct_order_lines fct_orders
-```
-
-### 9. Refresh the Power BI dashboard
-
-Open `powerbi/northwind.pbix` and refresh the datasets connected to the `analytics` schema.
-
-## Configuration
-
-Expected environment variables in `.env`:
-
-```env
-PGHOST=localhost
-PGPORT=5432
-PGDATABASE=*******
-PGUSER=*******
-PGPASSWORD=*******
-```
-
-The dbt profile is available in `dbt/profiles.yml` and points to:
-
-- host: `localhost`
-- port: `5432`
-- database: `northwind`
-- schema: `analytics`
-
 ## Documentation
 
 Project documentation available in `docs/`:
 
 - `docs/runbook.md`: operational step-by-step execution guide
 - `docs/data_dictionary.md`: dataset, grain, and metric definitions
+
+## Operational Guide
+
+For the full execution flow, environment setup, ingestion steps, dbt execution, validation process, and dashboard refresh instructions, see `docs/runbook.md`.
+
 
 ## Main Deliverables
 
