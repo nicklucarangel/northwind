@@ -9,3 +9,4 @@ dbt/logs/
 .DS_Store
 .ipynb_checkpoints/
 dbt/profiles.yml
+profiles.yml
