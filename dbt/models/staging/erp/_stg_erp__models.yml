@@ -1,0 +1,121 @@
+version: 2
+
+models:
+  - name: stg_erp__orders
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        tests:
+          - not_null
+      - name: employee_id
+        tests:
+          - not_null
+      - name: shipper_id
+        tests:
+          - not_null
+
+  - name: stg_erp__order_details
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_erp__orders')
+              field: order_id
+      - name: product_id
+        tests:
+          - not_null
+      - name: quantity
+        tests:
+          - not_null
+
+  - name: stg_erp__customers
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_erp__products
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+          - unique
+      - name: category_id
+        tests:
+          - not_null
+
+  - name: stg_erp__categories
+    columns:
+      - name: category_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_erp__shippers
+    columns:
+      - name: shipper_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_erp__employees
+    columns:
+      - name: employee_id
+        tests:
+          - not_null
+          - unique
+      - name: employee_full_name
+        tests:
+          - not_null
+
+  - name: stg_erp__suppliers
+    columns:
+      - name: supplier_id
+        tests:
+          - not_null
+          - unique
+      - name: supplier_name
+        tests:
+          - not_null
+
+  - name: stg_erp__region
+    columns:
+      - name: region_id
+        tests:
+          - not_null
+          - unique
+      - name: region_name
+        tests:
+          - not_null
+
+  - name: stg_erp__territories
+    columns:
+      - name: territory_id
+        tests:
+          - not_null
+          - unique
+      - name: region_name
+        tests:
+          - not_null
+
+  - name: stg_erp__us_states
+    columns:
+      - name: state_id
+        tests:
+          - not_null
+          - unique
+      - name: state_abbr
+        tests:
+          - not_null
+      - name: state_name
+        tests:
+          - not_null
+      - name: state_region
+        tests:
+          - not_null
+    

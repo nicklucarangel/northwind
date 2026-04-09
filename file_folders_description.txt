@@ -1,0 +1,43 @@
+northwind-analytics/
+├─ README.md
+├─ .gitignore
+├─ .env.example
+
+├─ data/                          # (geralmente não versionar tudo)
+│  ├─ input/                      # zip original + extração "como veio"
+│  │  ├─ northwind.zip
+│  │  └─ extracted/               # CSVs originais extraídos
+│  ├─ normalized/                 # CSVs normalizados (prontos para load)
+│  └─ exports/                    # opcional: marts exportadas p/ rodar PBI sem Postgres
+
+├─ infra/
+│  ├─ docker-compose.yml          # Postgres
+│  └─ initdb/
+│     └─ 00_create_schemas.sql    # cria schemas raw/stg/int/mart (ou só raw)
+
+├─ scripts/
+│  ├─ 00_unzip_northwind.sh
+│  ├─ 10_normalize_csv.py         # normalização mínima (newline em campos etc.)
+│  ├─ 20_load_raw.sql             # COPY/\copy para o schema raw
+│  └─ 21_load_raw.sh              # wrapper chamando psql (opcional)
+
+├─ dbt/
+│  ├─ dbt_project.yml
+│  ├─ profiles.yml                # opcional (muitos preferem fora do git)
+│  ├─ packages.yml
+│  ├─ models/
+│  │  ├─ staging/
+│  │  ├─ intermediate/
+│  │  └─ marts/
+│  ├─ macros/
+│  ├─ tests/
+│  └─ seeds/                      # (se você criar dim_date como seed, por ex.)
+│
+├─ powerbi/
+│  ├─ northwind.pbix
+│  └─ README.md                   # como abrir/publicar, fontes, credenciais
+│
+└─ docs/
+   ├─ report.pdf
+   ├─ data_dictionary.md
+   └─ runbook.md                  # passo-a-passo end-to-end

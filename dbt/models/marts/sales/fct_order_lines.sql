@@ -1,0 +1,21 @@
+select
+    order_id,
+    customer_id,
+    employee_id,
+    shipper_id,
+    order_date,
+    required_date,
+    shipped_date,
+    ship_city,
+    ship_region,
+    ship_country,
+    product_id,
+    category_id,
+    supplier_id,
+    unit_price,
+    quantity,
+    discount,
+    gross_item_revenue,
+    net_item_revenue,
+    discount_amount
+from {{ ref('int_sales__order_lines') }}

@@ -1,0 +1,21 @@
+select
+    cast(employee_id as integer) as employee_id,
+    last_name,
+    first_name,
+    trim(first_name || ' ' || last_name) as employee_full_name,
+    title,
+    title_of_courtesy,
+    cast(birth_date as date) as birth_date,
+    cast(hire_date as date) as hire_date,
+    address,
+    city,
+    region,
+    postal_code,
+    country,
+    home_phone as home_phone_raw,
+    regexp_replace(home_phone, '[^0-9]', '', 'g') as home_phone_clean,
+    extension,
+    notes,
+    cast(reports_to as integer) as reports_to_employee_id,
+    photo_path
+from {{ source('raw', 'employees') }}

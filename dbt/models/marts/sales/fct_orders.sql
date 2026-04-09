@@ -1,0 +1,22 @@
+select
+    order_id,
+    customer_id,
+    employee_id,
+    shipper_id,
+    order_date,
+    required_date,
+    shipped_date,
+    freight_amount,
+    ship_city,
+    ship_region,
+    ship_country,
+    total_skus,
+    total_quantity,
+    total_order_lines,
+    gross_order_revenue,
+    net_order_revenue,
+    total_discount_amount,
+    avg_discount_rate,
+    days_to_ship,
+    shipped_on_time_flag
+from {{ ref('int_sales__orders_enriched') }}
